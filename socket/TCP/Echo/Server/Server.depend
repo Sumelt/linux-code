@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1557902352 source:/home/melt/linux/socket/TCP/Echo/Server/main.cpp
+	"Shead.h"
+
+1557904681 /home/melt/linux/socket/TCP/Echo/Server/Shead.h
+	<iostream>
+	<string>
+	<cstring>
+	<cassert>
+	<sys/types.h>
+	<sys/socket.h>
+	<sys/wait.h>
+	<unistd.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+
+1557905653 source:/home/melt/linux/socket/TCP/Echo/Server/server.cpp
+	"Shead.h"
+

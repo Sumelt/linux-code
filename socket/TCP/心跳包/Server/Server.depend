@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1558791245 source:/home/melt/linux/socket/TCP/心跳包/Server/main.cpp
+	"server.h"
+
+1558791183 /home/melt/linux/socket/TCP/心跳包/Server/Shead.h
+	<iostream>
+	<string>
+	<cstring>
+	<cassert>
+	<sys/types.h>
+	<sys/socket.h>
+	<sys/wait.h>
+	<unistd.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+	<sys/time.h>
+	<sys/types.h>
+	<sys/select.h>
+	<map>
+	<pthread.h>
+	<errno.h>
+
+1558790837 source:/home/melt/linux/socket/TCP/心跳包/Server/server.cpp
+	"Shead.h"
+
+1558790837 /home/melt/linux/socket/TCP/心跳包/Server/server.cpp
+	"Shead.h"
+
+1558792524 /home/melt/linux/socket/TCP/心跳包/Server/server.h
+	"Shead.h"
+

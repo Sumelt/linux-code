@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1557902186 source:/home/melt/linux/socket/TCP/Echo/Client/main.cpp
+	"Chead.h"
+
+1560156995 /home/melt/linux/socket/TCP/Echo/Client/Chead.h
+	<iostream>
+	<string>
+	<cstring>
+	<cassert>
+	<sys/types.h>
+	<sys/socket.h>
+	<unistd.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+	<fcntl.h>
+	<errno.h>
+	<sys/select.h>
+
+1557903819 source:/home/melt/linux/socket/TCP/Echo/Client/client.cpp
+	"Chead.h"
+

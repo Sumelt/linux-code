@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1558257373 source:/home/melt/linux/socket实战/第三章局域网搜索案例/UDProvide/main.cpp
+	"Chead.h"
+
+1558231762 /home/melt/linux/socket实战/第三章局域网搜索案例/UDProvide/Chead.h
+	<iostream>
+	<string>
+	<cstring>
+	<cassert>
+	<sys/types.h>
+	<sys/socket.h>
+	<unistd.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+
+1558235260 source:/home/melt/linux/socket实战/第三章局域网搜索案例/UDProvide/Provide.cpp
+	"Chead.h"
+
