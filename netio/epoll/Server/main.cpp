@@ -7,5 +7,6 @@ int main()
 {
     Server serv( PORT );
     serv.Run();
+    //serv.daemon_run();
     return 0;
 }

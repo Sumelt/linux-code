@@ -1,7 +1,24 @@
-
 #include "server.h"
 
+static void sighandle( int signo ){
+    cout << "signal no : " << signo;
+    switch( signo ){
+        case 2 :
+            cout << " SIGINT " << endl;
+            exit( EXIT_SUCCESS );
+            break;
+        case 3 :
+            cout << " SIGQUIT " << endl;
+            exit( EXIT_SUCCESS );
+            break;
+        default :
+            cout << " UNKOWN SIGNAL " << endl;
+    }
+}
+
+char buf[ SIZE ] = {0,};
 Server::Server( uint16_t port ) {
+    int opt = 1;
     memset( &servaddr, 0, sizeof( servaddr ) );
     servlen = sizeof( servaddr );
     sockfd = socket( AF_INET, SOCK_STREAM, 0 );
@@ -12,6 +29,7 @@ Server::Server( uint16_t port ) {
     }
     else cout << "sock creath OK" << endl;
 
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     Bind( port );
     cout << "服务器已就绪，等待客户端连接......." << endl;
 }
@@ -70,7 +88,7 @@ void Server::deleteEvent( int eventfd, uint32_t eventState ) {
     event.events = eventState;
     event.data.fd = eventfd;
     epoll_ctl( epollfd, EPOLL_CTL_DEL, eventfd, &this->event );
-}
+} 
 
 void Server::modifyEvent( int eventfd, uint32_t eventState ) {
     event.events = eventState;
@@ -81,41 +99,45 @@ void Server::modifyEvent( int eventfd, uint32_t eventState ) {
 void Server::doRead( int eventfd, char *buf ) {
     ssize_t byte;
     byte = read( eventfd, buf, SIZE );
-    if( byte == -1 ) {
-        perror( "read faile" );
-        deleteEvent( eventfd, EPOLLIN );
-        close( eventfd );
-        exit( EXIT_FAILURE );
-    }
-    else if ( byte > 0 ) {
-        cout << "recv: " << buf << endl;
-        modifyEvent( eventfd, EPOLLOUT );
+    buf[ byte ] = '\0';
+    if( byte <= 0 ) {
+
+        switch( errno ) {
+            case EAGAIN :
+                break;
+            case EINTR :
+                byte = read( eventfd, buf, SIZE );
+                break;
+            default :
+                perror( "read faile" );
+                close( eventfd );
+                deleteEvent( eventfd, EPOLLIN );
+                cout << "client close connect " << endl;
+        }
     }
     else {
-        cout << " client close" << endl;
-        close( eventfd );
-        deleteEvent( eventfd, EPOLLIN );
+        cout << "recv byte : " << byte;
+        modifyEvent( eventfd, EPOLLOUT );
     }
 }
 
 void Server::doWrite( int eventfd, char *buf ) {
     ssize_t byte;
-    byte = write( eventfd, buf, SIZE );
+    byte = write( eventfd, buf, strlen( buf ) );
+
     if( byte == -1 ) {
         perror( "write faile" );
         deleteEvent( eventfd, EPOLLOUT );
         close( eventfd );
-        exit( EXIT_FAILURE );
     }
     else {
-        cout << "Server Echo OK" << endl;
+        cout << " Server broadcast OK and write byte : " << byte << endl;
         modifyEvent( eventfd, EPOLLIN );
     }
     memset( buf, 0, SIZE );
 }
 
 void Server::handlEvents( int eventfd, struct epoll_event *events, int cnt ) {
-    char buf[ SIZE ] = { 0 };
     //根据事件类型执行不同的处理
     //遍历就绪队列
     for ( int i = 0; i < cnt; ++i ) {
@@ -124,8 +146,9 @@ void Server::handlEvents( int eventfd, struct epoll_event *events, int cnt ) {
             Accept();
         else if ( events[ i ].events & EPOLLIN )
             doRead( fd, buf );
-        else
+        else {
             doWrite( fd, buf );       
+        }
     }
 }
 
@@ -142,5 +165,16 @@ void Server::doEpoll() {
 }
 
 void Server::Run() {
+    signal_set();
     doEpoll();
+}
+
+void Server::daemon_run(){
+    daemon( 0, 0 );
+    Run();
+}
+
+void Server::signal_set(){
+    signal( SIGINT, sighandle );
+    signal( SIGQUIT, sighandle );
 }

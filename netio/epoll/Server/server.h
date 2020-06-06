@@ -2,6 +2,10 @@
 #define SERVER_H
 
 #include <iostream>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 #include <sys/types.h>          /* See NOTES */
 #include <sys/socket.h>
 #include <unistd.h>
@@ -9,6 +13,7 @@
 #include <arpa/inet.h>
 #include <cstring>
 #include <sys/epoll.h>
+#include <signal.h>
 using namespace std;
 
 const int SUMEVENT = 100;
@@ -35,10 +40,12 @@ private:
     void doWrite( int eventfd, char *buf );
     void handlEvents( int eventfd, struct epoll_event* events, int cnt );
     
+    void signal_set();
 public:
     Server( uint16_t );
     ~Server();
     void Run();
+    void daemon_run();
 
 };
 
